@@ -88,3 +88,43 @@ case class ChangeNameTransaction(empId: Int, newName: String) extends ChangeEmpl
     employee
   }
 }
+
+abstract class ChangeClassificationTransaction extends Transaction {
+  val empId: Int
+
+  def change(e: Employee): Employee
+
+  def execute() = {
+    GPayrollDatabase.getEmployee(empId) match {
+      case e: Some[Employee] => {
+        val employee = e.get
+        GPayrollDatabase.addEmployee(employee.empId, change(employee))
+      }
+      case None => throw new IllegalArgumentException(f"No such employee: $empId")
+    }
+  }
+}
+
+case class ChangeHourlyTransaction(empId: Int, hourlyRate: Double) extends ChangeClassificationTransaction {
+  def change(e: Employee): Employee = {
+    e.setClassification(HourlyClassification(hourlyRate))
+    e.setSchedule(new WeeklySchedule)
+    e
+  }
+}
+
+case class ChangeSalariedTransaction(empId: Int, salary: Double) extends ChangeClassificationTransaction {
+  def change(e: Employee): Employee = {
+    e.setClassification(SalariedClassification(salary))
+    e.setSchedule(new MonthlySchedule)
+    e
+  }
+}
+
+case class ChangeCommissionedClassification(empId: Int, salary: Double, commisionRate: Double) extends ChangeClassificationTransaction {
+  def change(e: Employee): Employee = {
+    e.setClassification(CommissionedClassification(salary, commisionRate))
+    e.setSchedule(new BiweeklySchedule)
+    e
+  }
+}
