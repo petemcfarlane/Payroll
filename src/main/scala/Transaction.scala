@@ -19,7 +19,7 @@ abstract class AddEmployeeTransaction extends Transaction {
     e.setClassification(pc)
     e.setSchedule(ps)
     e.setMethod(pm)
-    GPayrollDatabase.addEmployee(empId, e)
+    GPayrollDatabase.addEmployee(e)
   }
 }
 
@@ -73,10 +73,7 @@ abstract class ChangeEmployeeTransaction extends Transaction {
 
   def execute(): Unit = {
     GPayrollDatabase.getEmployee(empId) match {
-      case e: Some[Employee] => {
-        val employee = e.get
-        GPayrollDatabase.addEmployee(employee.empId, change(employee))
-      }
+      case e: Some[Employee] => GPayrollDatabase.addEmployee(change(e.get))
       case None => throw new IllegalArgumentException("No such employee")
     }
   }
@@ -89,42 +86,49 @@ case class ChangeNameTransaction(empId: Int, newName: String) extends ChangeEmpl
   }
 }
 
-abstract class ChangeClassificationTransaction extends Transaction {
-  val empId: Int
+abstract class ChangeClassificationTransaction extends ChangeEmployeeTransaction {
+  def paymentClassification: PaymentClassification
+  def paymentSchedule: PaymentSchedule
 
-  def change(e: Employee): Employee
-
-  def execute() = {
-    GPayrollDatabase.getEmployee(empId) match {
-      case e: Some[Employee] => {
-        val employee = e.get
-        GPayrollDatabase.addEmployee(employee.empId, change(employee))
-      }
-      case None => throw new IllegalArgumentException(f"No such employee: $empId")
-    }
+  def change(e: Employee): Employee = {
+    e.setClassification(paymentClassification)
+    e.setSchedule(paymentSchedule)
+    e
   }
 }
 
 case class ChangeHourlyTransaction(empId: Int, hourlyRate: Double) extends ChangeClassificationTransaction {
-  def change(e: Employee): Employee = {
-    e.setClassification(HourlyClassification(hourlyRate))
-    e.setSchedule(new WeeklySchedule)
-    e
-  }
+  def paymentClassification = new HourlyClassification(hourlyRate)
+  def paymentSchedule = new WeeklySchedule
 }
 
 case class ChangeSalariedTransaction(empId: Int, salary: Double) extends ChangeClassificationTransaction {
+  def paymentClassification = new SalariedClassification(salary)
+  def paymentSchedule = new MonthlySchedule
+}
+
+case class ChangeCommissionedClassification(empId: Int, salary: Double, commisionRate: Double) extends ChangeClassificationTransaction {
+  def paymentClassification = new CommissionedClassification(salary, commisionRate)
+  def paymentSchedule = new BiweeklySchedule
+}
+
+abstract class ChangePaymentMethodTransaction extends ChangeEmployeeTransaction {
+  def paymentMethod: PaymentMethod
+
   def change(e: Employee): Employee = {
-    e.setClassification(SalariedClassification(salary))
-    e.setSchedule(new MonthlySchedule)
+    e.setMethod(paymentMethod)
     e
   }
 }
 
-case class ChangeCommissionedClassification(empId: Int, salary: Double, commisionRate: Double) extends ChangeClassificationTransaction {
-  def change(e: Employee): Employee = {
-    e.setClassification(CommissionedClassification(salary, commisionRate))
-    e.setSchedule(new BiweeklySchedule)
-    e
-  }
+case class ChangeDirectTransaction(empId: Int) extends ChangePaymentMethodTransaction {
+  def paymentMethod = new DirectMethod
+}
+
+case class ChangeMailTransaction(empId: Int) extends ChangePaymentMethodTransaction {
+  def paymentMethod = new MailMethod
+}
+
+case class ChangeHoldTransaction(empId: Int) extends ChangePaymentMethodTransaction {
+  def paymentMethod = new HoldMethod
 }

@@ -1,6 +1,6 @@
 trait PayrollDatabase {
   def getEmployee(empId: Int): Option[Employee]
-  def addEmployee(empId: Int, e: Employee)
+  def addEmployee(e: Employee)
   def deleteEmployee(empId: Int)
   def addUnionMember(memberId: Int, e: Employee)
   def getUnionMember(memberId: Int): Option[Employee]
@@ -12,7 +12,7 @@ object GPayrollDatabase extends PayrollDatabase {
 
   def getEmployee(empId: Int): Option[Employee] = employees.get(empId)
 
-  def addEmployee(empId: Int, e: Employee): Unit = employees = employees + (empId -> e)
+  def addEmployee(e: Employee): Unit = employees = employees + (e.empId -> e)
 
   def deleteEmployee(empId: Int): Unit = employees = employees - empId
 
