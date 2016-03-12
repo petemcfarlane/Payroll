@@ -65,3 +65,26 @@ case class ServiceChargeTransaction(memberId: Int, date: Long, charge: Double) e
     }
   }
 }
+
+abstract class ChangeEmployeeTransaction extends Transaction {
+  val empId: Int
+
+  protected def change(e: Employee): Employee
+
+  def execute(): Unit = {
+    GPayrollDatabase.getEmployee(empId) match {
+      case e: Some[Employee] => {
+        val employee = e.get
+        GPayrollDatabase.addEmployee(employee.empId, change(employee))
+      }
+      case None => throw new IllegalArgumentException("No such employee")
+    }
+  }
+}
+
+case class ChangeNameTransaction(empId: Int, newName: String) extends ChangeEmployeeTransaction {
+  protected def change(employee: Employee): Employee = {
+    employee.setName(newName)
+    employee
+  }
+}
