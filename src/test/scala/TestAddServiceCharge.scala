@@ -7,9 +7,9 @@ class TestAddServiceCharge extends Specification {
 
     val e = GPayrollDatabase.getEmployee(empId).get
 
-    val af = UnionAffiliation(12.5)
-    e.setAffiliation(af)
     val memberId = 86
+    val af = UnionAffiliation(memberId, 12.5)
+    e.setAffiliation(af)
     GPayrollDatabase.addUnionMember(memberId, e)
 
     val sct = ServiceChargeTransaction(memberId, 20011101, 12.95)

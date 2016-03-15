@@ -132,3 +132,18 @@ case class ChangeMailTransaction(empId: Int) extends ChangePaymentMethodTransact
 case class ChangeHoldTransaction(empId: Int) extends ChangePaymentMethodTransaction {
   def paymentMethod = new HoldMethod
 }
+
+abstract class ChangeAffiliationTransaction extends ChangeEmployeeTransaction {
+  def affiliation: Affiliation
+  def recordAffiliation(e: Employee)
+  def change(e: Employee): Employee = {
+    recordAffiliation(e)
+    e.setAffiliation(affiliation)
+    e
+  }
+}
+
+case class ChangeMemberTransaction(empId: Int, memberId: Int, dues: Double) extends ChangeAffiliationTransaction {
+  def affiliation = UnionAffiliation(memberId, dues)
+  def recordAffiliation(e: Employee) = GPayrollDatabase.addUnionMember(memberId, e)
+}
