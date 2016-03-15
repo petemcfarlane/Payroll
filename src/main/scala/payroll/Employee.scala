@@ -1,3 +1,5 @@
+package payroll
+
 
 case class Employee(empId: Int, var name: String, address: String) {
   var paymentClassification: PaymentClassification = null

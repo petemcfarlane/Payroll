@@ -1,7 +1,9 @@
+package payroll
+
 import org.specs2.mutable.Specification
 
 class TestTimeCardTransaction extends Specification {
-  "Time Card Transaction" >> {
+  "Time Card payroll.Transaction" >> {
     val empId = 5
     AddHourlyEmployee(empId, "Bill", "Home", 50.00).execute()
 

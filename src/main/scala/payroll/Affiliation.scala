@@ -1,3 +1,5 @@
+package payroll
+
 trait Affiliation
 
 case class UnionAffiliation(memberId: Int, dues: Double) extends Affiliation {

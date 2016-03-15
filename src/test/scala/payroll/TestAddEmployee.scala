@@ -1,7 +1,9 @@
+package payroll
+
 import org.specs2.mutable.Specification
 
 class TestAddEmployee extends Specification {
-  "Add Salaried Employee" >> {
+  "Add Salaried payroll.Employee" >> {
     val empId = 1
     val t = AddSalariedEmployee(empId, "Bob", "Home", 1000.00)
     t.execute()
@@ -18,7 +20,7 @@ class TestAddEmployee extends Specification {
     e.paymentMethod should beAnInstanceOf[HoldMethod]
   }
 
-  "Add Hourly Employee" >> {
+  "Add Hourly payroll.Employee" >> {
     val empId = 2
     val t = AddHourlyEmployee(empId, "David", "France", 10.00)
     t.execute()
@@ -35,7 +37,7 @@ class TestAddEmployee extends Specification {
     e.paymentMethod should beAnInstanceOf[HoldMethod]
   }
 
-  "Add Commissioned Employee" >> {
+  "Add Commissioned payroll.Employee" >> {
     val empId = 3
     val t = AddCommissionedEmployee(empId, "Frank", "Germany", 1050.00, 35.00)
     t.execute()

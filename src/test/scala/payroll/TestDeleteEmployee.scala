@@ -1,7 +1,9 @@
+package payroll
+
 import org.specs2.mutable.Specification
 
 class TestDeleteEmployee extends Specification {
-  "Delete Employee" >> {
+  "Delete payroll.Employee" >> {
     val empId = 4
     AddSalariedEmployee(empId, "Ben", "Home", 1000.00).execute()
 

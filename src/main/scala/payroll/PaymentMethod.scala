@@ -1,3 +1,5 @@
+package payroll
+
 trait PaymentMethod
 
 class HoldMethod extends PaymentMethod

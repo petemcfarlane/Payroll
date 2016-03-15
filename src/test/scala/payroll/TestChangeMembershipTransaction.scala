@@ -1,3 +1,5 @@
+package payroll
+
 import org.specs2.mutable.Specification
 
 class TestChangeMembershipTransaction extends Specification {

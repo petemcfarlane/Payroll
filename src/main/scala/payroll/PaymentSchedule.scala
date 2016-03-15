@@ -1,3 +1,5 @@
+package payroll
+
 trait PaymentSchedule
 
 class MonthlySchedule extends PaymentSchedule

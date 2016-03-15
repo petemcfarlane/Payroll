@@ -1,7 +1,9 @@
+package payroll
+
 import org.specs2.mutable.Specification
 
 class TestAddServiceCharge extends Specification {
-  "Service Charge Transaction" >> {
+  "Service Charge payroll.Transaction" >> {
     val empId = 6
     AddHourlyEmployee(empId, "Betty", "Home", 50.00).execute()
 

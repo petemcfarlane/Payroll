@@ -1,3 +1,5 @@
+package payroll
+
 trait PayrollDatabase {
   def getEmployee(empId: Int): Option[Employee]
   def addEmployee(e: Employee)

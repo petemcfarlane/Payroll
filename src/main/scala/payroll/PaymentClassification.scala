@@ -1,3 +1,5 @@
+package payroll
+
 trait PaymentClassification
 
 case class SalariedClassification(salary: Double) extends PaymentClassification
